@@ -1,0 +1,32 @@
+/* * Este arquivo vai conter nossos estilos personalizados,
+ * principalmente para o Modo Escuro.
+ */
+
+/* Estilos para o Modo Escuro (Serão ativados via JS) */
+body.dark-mode {
+    background-color: #222;
+    color: #eee;
+}
+
+body.dark-mode .bg-white {
+    background-color: #333 !important; /* !important para sobrepor o Bootstrap */
+}
+
+body.dark-mode .navbar {
+    background-color: #333 !important;
+}
+
+body.dark-mode .navbar-brand {
+    color: #eee;
+}
+
+body.dark-mode .form-control, 
+body.dark-mode .form-select {
+    background-color: #444;
+    color: #eee;
+    border-color: #555;
+}
+
+body.dark-mode .form-control::placeholder {
+    color: #aaa;
+}

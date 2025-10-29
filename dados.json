@@ -1,0 +1,74 @@
+[
+  {
+    "id": 1,
+    "curso": "Sistemas para Internet",
+    "periodo": 2,
+    "turno": "Matutino",
+    "disciplina": "Fund Proj b de Dados",
+    "professor": "Liliane Felix",
+    "sala": "LABDES",
+    "diaSemana": "Segunda-feira",
+    "horarioInicio": "09:15",
+    "horarioFim": "10:45"
+  },
+  {
+    "id": 2,
+    "curso": "Sistemas para Internet",
+    "periodo": 2,
+    "turno": "Matutino",
+    "disciplina": "Inglês",
+    "professor": "Mirian Nichida",
+    "sala": "LABMÍDIA",
+    "diaSemana": "Terça-feira",
+    "horarioInicio": "08:15",
+    "horarioFim": "09:00"
+  },
+  {
+    "id": 3,
+    "curso": "Sistemas para Internet",
+    "periodo": 2,
+    "turno": "Matutino",
+    "disciplina": "Análise Sistemas",
+    "professor": "Mirian Nichida",
+    "sala": "LABMÍDIA",
+    "diaSemana": "Terça-feira",
+    "horarioInicio": "09:15",
+    "horarioFim": "10:00"
+  },
+  {
+    "id": 4,
+    "curso": "Sistemas para Internet",
+    "periodo": 2,
+    "turno": "Matutino",
+    "disciplina": "Progr Basic WEB",
+    "professor": "Ricardo Loureiro",
+    "sala": "LABDES",
+    "diaSemana": "Quarta-feira",
+    "horarioInicio": "09:15",
+    "horarioFim": "10:45"
+  },
+  {
+    "id": 5,
+    "curso": "Sistemas para Internet",
+    "periodo": 2,
+    "turno": "Matutino",
+    "disciplina": "Fund Prog Científica",
+    "professor": "Vinicius Rios",
+    "sala": "LABMÁTICA",
+    "diaSemana": "Quinta-feira",
+    "horarioInicio": "09:15",
+    "horarioFim": "10:45"
+  },
+  {
+    "id": 6,
+    "curso": "Sistemas para Internet",
+    "periodo": 2,
+    "turno": "Matutino",
+    "disciplina": "Prog Ori Obj",
+    "professor": "Helder Cleber",
+    "sala": "LABPO",
+    "diaSemana": "Sexta-feira",
+    "horarioInicio": "09:15",
+    "horarioFim": "10:45"
+  }
+]
