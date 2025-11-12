@@ -3,9 +3,6 @@
  * Arquivo principal do JavaScript (app.js)
  */
 
-// Este 'ouvinte de evento' garante que nosso script só vai rodar
-// DEPOIS que todo o HTML (index.html) for carregado.
-// É o nosso "porteiro": só começa o trabalho quando a casa está pronta.
 document.addEventListener('DOMContentLoaded', () => {
     console.log("MQS App Iniciado. DOM pronto.");
     
@@ -16,39 +13,109 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /**
  * @description Carrega os dados dos horários do arquivo dados.json.
- * Usa o método moderno async/await com try/catch.
- * * @see Requisito 5 (Assíncrono Fetch) [cite: 94, 112]
- * @see Requisito 6 (async/await + try/catch) 
+ * @see Requisito 5 (Assíncrono Fetch)
+ * @see Requisito 6 (async/await + try/catch)
  */
 async function carregarDados() {
     console.log("Iniciando busca de dados (fetch)...");
+    
+    // Seleciona os containers de feedback (Semana 8)
+    const loadingFeedback = document.getElementById('loading-feedback');
+    const errorFeedback = document.getElementById('error-feedback');
 
-    // O 'try' é o nosso "Plano A". Vamos TENTAR buscar os dados.
+    // Mostra o "Carregando..." (Início da Semana 8)
+    if (loadingFeedback) {
+        loadingFeedback.textContent = "Carregando horários...";
+    }
+
     try {
-        // 1. Faz o pedido (fetch) e ESPERA (await) a resposta.
         const response = await fetch('./dados.json');
 
-        // 2. Se a resposta não for OK (ex: Erro 404, não achou o arquivo),
-        // nós mesmos vamos "lançar" um erro para pular para o 'catch'.
         if (!response.ok) {
             throw new Error(`Erro de HTTP: Status ${response.status}`);
         }
 
-        // 3. A resposta chegou (a caixa da pizza).
-        //    Vamos ESPERAR (await) ela ser "formatada" de JSON para Objeto JS.
         const dados = await response.json();
 
-        // 4. SUCESSO! Mostra os dados no console.
         console.log("Dados carregados com sucesso:");
         console.log(dados);
 
+        // Limpa o "Carregando..."
+        if (loadingFeedback) {
+            loadingFeedback.textContent = "";
+        }
+
+        // *** NOSSA NOVA LINHA DA SEMANA 3 ***
+        // Chama a função para "desenhar" os dados na tela.
+        renderizarHorarios(dados);
+
     } 
-    // O 'catch' é o nosso "Plano B".
-    // Se qualquer coisa no 'try' falhar, o código pula para cá.
     catch (error) {
         console.error("Falha ao carregar os dados:", error.message);
         
-        // Na Semana 8 (Feedback), vamos mostrar isso para o usuário.
-        // Por enquanto, o console é o suficiente.
+        // Limpa o "Carregando..." e mostra o erro (Semana 8)
+        if (loadingFeedback) {
+            loadingFeedback.textContent = "";
+        }
+        if (errorFeedback) {
+            errorFeedback.textContent = "Falha ao carregar os dados. Verifique a conexão ou o arquivo 'dados.json'.";
+            errorFeedback.classList.remove('d-none'); // Mostra o alerta de erro
+        }
     }
+}
+
+
+/**
+ * @description Renderiza (desenha) os horários na tela EM FORMATO DE TABELA.
+ * Pega o array de dados e cria o HTML dinamicamente.
+ * @param {Array} horarios - O array de objetos de horário vindo do JSON.
+ * @see Requisito 4 (DOM Dinâmico)
+ * @see Requisito 2 (Arrays com .map)
+ */
+function renderizarHorarios(horarios) {
+    console.log("Iniciando renderização (Modo Tabela)...");
+
+    // 1. (O Salão) Pega o CORPO da tabela (tbody)
+    const container = document.getElementById('resultados-container');
+
+    // 2. (Limpar o salão) Garante que ele está vazio antes de desenhar.
+    container.innerHTML = "";
+
+    // 3. (A Mágica) Verifica se temos horários para mostrar.
+    if (horarios.length === 0) {
+        // Se não houver dados, mostramos uma linha de "aviso"
+        // 'colspan="6"' faz esta célula única ocupar 6 colunas.
+        container.innerHTML = `
+            <tr>
+                <td colspan="6" class="text-center text-muted">Nenhum horário encontrado.</td>
+            </tr>
+        `;
+        return; // Para a função aqui
+    }
+
+    // 4. (O Host) Usa .map() para transformar CADA objeto 'horario' 
+    //    em uma LINHA DE TABELA (<tr>).
+    const htmlStringsArray = horarios.map(horario => {
+        
+        // Usamos "template literals" (o `) para montar o HTML da linha
+        // Note a classe .align-middle para centralização vertical
+        return `
+            <tr class="align-middle">
+                <td>${horario.disciplina}</td>
+                <td>${horario.professor}</td>
+                <td>${horario.sala}</td>
+                <td>${horario.diaSemana}</td>
+                <td>${horario.horarioInicio} - ${horario.horarioFim}</td>
+                <td>${horario.periodo}º</td>
+            </tr>
+        `;
+    }); // (Fonte: Os campos como 'horario.disciplina' são baseados na estrutura de 'dados.json' definida em MQS Conversa 1.md)
+
+    // 5. (Juntar) Junta todas as <tr> em uma string única.
+    const htmlFinal = htmlStringsArray.join('');
+
+    // 6. (Desenhar) Injeta o HTML final no <tbody>.
+    container.innerHTML = htmlFinal;
+
+    console.log("Renderização (Tabela) concluída.");
 }

@@ -46,8 +46,27 @@
         <div id="error-feedback" class="alert alert-danger d-none">
             </div>
 
-        <div id="resultados-container" class="row g-3">
-            </div>
+        <div class="table-responsive shadow-sm bg-white rounded">
+
+    <table class="table table-striped table-hover table-bordered mb-0">
+        <thead class="table-dark">
+            <tr>
+                <th>Disciplina</th>
+                <th>Professor</th>
+                <th>Sala</th>
+                <th>Dia</th>
+                <th>Horário</th>
+                <th>Período</th>
+            </tr>
+        </thead>
+        
+        <tbody id="resultados-container">
+            </tbody>
+    </table>
+</div>
+
+<div id="loading-feedback" class="text-center my-4"></div>
+<div id="error-feedback" class="alert alert-danger d-none"></div>
     </main>
 
     <script src="app.js"></script>
