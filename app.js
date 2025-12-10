@@ -66,56 +66,78 @@ async function carregarDados() {
 
 
 /**
- * @description Renderiza (desenha) os horários na tela EM FORMATO DE TABELA.
- * Pega o array de dados e cria o HTML dinamicamente.
- * @param {Array} horarios - O array de objetos de horário vindo do JSON.
- * @see Requisito 4 (DOM Dinâmico)
- * @see Requisito 2 (Arrays com .map)
+ * @description Renderiza os horários em formato de GRADE SEMANAL (Matriz).
+ * @param {Array} horarios - O array de objetos vindo do JSON.
  */
 function renderizarHorarios(horarios) {
-    console.log("Iniciando renderização (Modo Tabela)...");
-
-    // 1. (O Salão) Pega o CORPO da tabela (tbody)
+    console.log("Renderizando Grade Semanal...");
     const container = document.getElementById('resultados-container');
+    container.innerHTML = ""; // Limpa a tabela
 
-    // 2. (Limpar o salão) Garante que ele está vazio antes de desenhar.
-    container.innerHTML = "";
+    // 1. Definição dos Slots de Tempo (Baseado no seu Protótipo)
+    // Nota: Adicionei o 'id' para facilitar comparações futuras se precisar.
+    const slots = [
+        { label: "1ª Aula", inicio: "07:30", fim: "08:15" },
+        { label: "2ª Aula", inicio: "08:15", fim: "09:00" },
+        { label: "Intervalo", inicio: "09:00", fim: "09:15", intervalo: true }, // Marcador de intervalo
+        { label: "3ª Aula", inicio: "09:15", fim: "10:00" },
+        { label: "4ª Aula", inicio: "10:00", fim: "10:45" },
+        // Adicione 5ª e 6ª aulas aqui se necessário
+    ];
 
-    // 3. (A Mágica) Verifica se temos horários para mostrar.
-    if (horarios.length === 0) {
-        // Se não houver dados, mostramos uma linha de "aviso"
-        // 'colspan="6"' faz esta célula única ocupar 6 colunas.
-        container.innerHTML = `
-            <tr>
-                <td colspan="6" class="text-center text-muted">Nenhum horário encontrado.</td>
-            </tr>
-        `;
-        return; // Para a função aqui
-    }
+    const diasSemana = ["Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira"];
 
-    // 4. (O Host) Usa .map() para transformar CADA objeto 'horario' 
-    //    em uma LINHA DE TABELA (<tr>).
-    const htmlStringsArray = horarios.map(horario => {
+    // 2. Construção das Linhas (Iteramos por cada slot de tempo)
+    const htmlFinal = slots.map(slot => {
         
-        // Usamos "template literals" (o `) para montar o HTML da linha
-        // Note a classe .align-middle para centralização vertical
+        // Se for intervalo, renderiza uma linha especial (Visual do Protótipo)
+        if (slot.intervalo) {
+            return `
+                <tr class="table-secondary fw-bold">
+                    <td class="align-middle">${slot.inicio} - ${slot.fim}</td>
+                    <td colspan="5" class="align-middle">INTERVALO</td>
+                </tr>
+            `;
+        }
+
+        // Se for aula, precisamos descobrir qual matéria acontece neste dia/hora
+        const celulasDias = diasSemana.map(dia => {
+            // A BUSCA (Core da Lógica):
+            // Encontra uma aula que seja neste DIA e que "cubra" este slot de tempo.
+            // Lógica: O slot começa DEPOIS OU JUNTO da aula E termina ANTES OU JUNTO da aula.
+            // Isso resolve aulas duplas (ex: 09:15 as 10:45 vai aparecer em 2 slots).
+            const aula = horarios.find(h => 
+                h.diaSemana === dia && 
+                h.horarioInicio <= slot.inicio && 
+                h.horarioFim >= slot.fim
+            );
+
+            if (aula) {
+                // Célula preenchida (Com layout interno vertical: Matéria > Prof > Sala)
+                return `
+                    <td class="align-middle p-2">
+                        <div class="fw-bold text-primary small">${aula.disciplina}</div>
+                        <div class="text-muted small" style="font-size: 0.85rem;">${aula.professor}</div>
+                        <div class="badge bg-light text-dark border mt-1">${aula.sala}</div>
+                    </td>
+                `;
+            } else {
+                // Célula vazia
+                return `<td class="align-middle text-muted">-</td>`;
+            }
+        }).join('');
+
+        // Retorna a linha completa do slot (Hora + 5 Células)
         return `
-            <tr class="align-middle">
-                <td>${horario.disciplina}</td>
-                <td>${horario.professor}</td>
-                <td>${horario.sala}</td>
-                <td>${horario.diaSemana}</td>
-                <td>${horario.horarioInicio} - ${horario.horarioFim}</td>
-                <td>${horario.periodo}º</td>
+            <tr>
+                <td class="align-middle fw-bold bg-light">
+                    <div class="small text-muted">${slot.label}</div>
+                    <div>${slot.inicio} <br> ${slot.fim}</div>
+                </td>
+                ${celulasDias}
             </tr>
         `;
-    }); // (Fonte: Os campos como 'horario.disciplina' são baseados na estrutura de 'dados.json' definida em MQS Conversa 1.md)
+    }).join('');
 
-    // 5. (Juntar) Junta todas as <tr> em uma string única.
-    const htmlFinal = htmlStringsArray.join('');
-
-    // 6. (Desenhar) Injeta o HTML final no <tbody>.
     container.innerHTML = htmlFinal;
-
-    console.log("Renderização (Tabela) concluída.");
 }

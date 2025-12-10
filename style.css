@@ -30,3 +30,18 @@ body.dark-mode .form-select {
 body.dark-mode .form-control::placeholder {
     color: #aaa;
 }
+
+/* Garante que as colunas da grade tenham um tamanho mínimo */
+/* Isso força a barra de rolagem aparecer em telas pequenas, como você pediu */
+th, td {
+    min-width: 120px; /* Ajuste conforme achar melhor */
+}
+
+/* A primeira coluna (Horário) pode ser menor */
+th:first-child, td:first-child {
+    min-width: 80px;
+    background-color: #f8f9fa; /* Destaca a coluna de horários */
+    position: sticky; /* (Opcional) Mantém o horário fixo ao rolar */
+    left: 0;
+    z-index: 1; /* Fica acima das outras ao rolar */
+}
